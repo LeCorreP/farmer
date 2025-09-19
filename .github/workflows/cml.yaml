@@ -6,7 +6,15 @@ jobs:
     container: ghcr.io/iterative/cml:0-dvc2-base1
     steps:
       - uses: actions/checkout@v3
-      - uses: iterative/setup-cml@v1
+      - name: Fix Git permissions
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      # Set up DVC
+      - uses: iterative/setup-dvc@v1
+
+      # Configure DVC auto-staging (optional)
+      - name: Configure DVC
+        run: dvc config core.autostage true
       - name: cml_run
         env:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
