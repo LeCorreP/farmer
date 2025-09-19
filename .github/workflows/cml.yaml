@@ -27,5 +27,5 @@ jobs:
 
           # Add figure to the report
           echo "## Validating results by region"
-          echo "![](./by_region.png)"" >> report.md
+          echo "![](./by_region.png)" >> report.md
           cml comment create report.md
