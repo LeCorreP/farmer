@@ -6,6 +6,15 @@ jobs:
     container: ghcr.io/iterative/cml:0-dvc2-base1
     steps:
       - uses: actions/checkout@v3
+      - name: Fix Git permissions
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      # Set up DVC
+      - uses: iterative/setup-dvc@v1
+
+      # Configure DVC auto-staging (optional)
+      - name: Configure DVC
+        run: dvc config core.autostage true
       - name: cml_run
         env:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
@@ -14,9 +23,9 @@ jobs:
           dvc repro 
 
           git fetch --prune
-          dvc metrics diff --show-md master > report.md
+          dvc metrics diff --md master > report.md
 
           # Add figure to the report
           echo "## Validating results by region"
-          echo "![](./by_region.png) >> report.md
+          echo "![](./by_region.png)" >> report.md
           cml comment create report.md
